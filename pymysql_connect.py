@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import pymysql   # 導入python鏈接mysql的包
+import os
+import pymysql
 from tabulate import tabulate
 from pymysql.cursors import DictCursor
-
 
 conn = None
 cursor = None
@@ -12,8 +12,8 @@ try:
     # 創建python與mysql的鏈接
     conn = pymysql.connect(
         host="localhost",   # 主機名稱
-        user="root",        # mysql的用戶名
-        password="666666",  # mysql的root用戶密碼
+        user=os.getenv("MYSQL_USER"),        # mysql的用戶名
+        password=os.getenv("MYSQL_PASSWORD"),  # mysql的root用戶密碼
         database="world",   # 指定連接的數據庫
         charset="utf8mb4"   # 設定編碼，以免錯誤和亂碼
     )
@@ -48,8 +48,9 @@ try:
 except pymysql.MySQLError as err:
     print(f"鏈接mysql或者查詢發生錯誤：{err}")
 
+# 關閉游標cursor, 關閉鏈接conn
 finally:
     if cursor:
-        cursor.close()  # 關閉游標cursor
+        cursor.close()
     if conn:
-        conn.close()    # 關閉鏈接conn
+        conn.close()
